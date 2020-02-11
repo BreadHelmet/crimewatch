@@ -1,0 +1,23 @@
+
+.side-bar {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 50px;
+  height: 100%;
+  background: #444475;
+  z-index: 1;
+  box-shadow: 0 0 5px black;
+}
+
+i.fas, i.far {
+  font-size: 30px;
+  color: white;
+  width: 100%;
+  padding: 5px 0;
+}
+
+i.fas:hover, i.far:hover {
+  background: white;
+  color: #444475;
+}
