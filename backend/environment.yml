@@ -1,4 +1,4 @@
-name: boilerplate-web
+name: crimewatch
 channels:
   - anaconda
   - conda-forge
@@ -62,5 +62,3 @@ dependencies:
   - xz=5.2.4=h14c3975_4
   - zipp=0.5.2=py_0
   - zlib=1.2.11=h7b6447c_3
-prefix: /home/tobias/anaconda3/envs/boilerplate-web
-
