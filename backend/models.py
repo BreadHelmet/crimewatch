@@ -21,7 +21,6 @@ def delete_from_database(entry):
 
 class Incident(db.Model):
   __tablename__ = 'incidents'
-
   id = db.Column(db.Integer, primary_key=True)
   title = db.Column(db.String(50))
   description = db.Column(db.String(50))
