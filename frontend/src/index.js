@@ -14,6 +14,7 @@ const initialState = {
     loggedIn: false,
   },
   incidents: [],
+  incident: null,
 };
 const store = createStore(rootReducer, initialState);
 

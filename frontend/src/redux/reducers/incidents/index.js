@@ -1,18 +1,21 @@
 import { ActionTypes } from 'redux/actions/incidents';
 
 export function incidents(state = {}, action) {
-  
+  const { incidents } = action;
   switch (action.type) {
     case ActionTypes.SET_INCIDENTS:
-      const { incidents } = action;
-      // console.log('in incidents reducer', action.incident );
-      return {
-        ...state,
-        ...incidents,
-      };//Object.assign({}, state, action.incidents);//{ ...state, incidents: action.incidents };
+      return incidents;
     default:
       return state;
   }
 }
 
-export default incidents;
+export function incident(state = {}, action) {
+  const { type, incident } = action;
+  switch (type) {
+    case ActionTypes.SET_INCIDENT:
+      return incident;
+    default:
+      return state;
+  }
+}

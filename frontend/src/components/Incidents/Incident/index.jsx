@@ -1,43 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import LoadingIndicator from 'components/LoadingIndicator';
-import { useDispatch, useSelector } from 'react-redux';
-import { getIncidents } from 'api/incident';
-import { setIncidents } from 'redux/actions/incidents';
+import { connect } from 'react-redux';
+import { getIncident } from 'api/incident';
+import IncidentActions from 'redux/actions/incidents/index';
 import PropTypes from 'prop-types';
 
-export function Incident({ incidentId }) {
-  const dispatch = useDispatch();
-  const incidents = useSelector(state => state.incidents);
+export function Incident({ id, setIncident, incident }) {
   const [error, setError] = useState(null);
   useEffect(() => {
-    getIncidents().then(incidents => dispatch(setIncidents(incidents))).catch(e => setError(e.message));
-  }, []);
-
-  if (!incidents) return <LoadingIndicator />;
-
-  const incident = incidents[ incidentId ];
-
+    getIncident(id).then(setIncident).catch(setError);
+  }, [id, setIncident]);
   return (
     <>
-      { error ? (
-        <>
-          <div className="error-message">
-            <p>{error}</p>
-          </div>
-        </>
-      ) : (
-        <>
-          <h1>Incident</h1>
-          <p>{incident.title}</p>
-          <p>{incident.description}</p>
-        </>
-      ) }
+      <div className="incident-card">
+        <h1>Incident</h1>
+        <p>{incident?.title}</p>
+        <p>{incident?.description}</p>
+      </div>
     </>
   );
 }
 
 Incident.propTypes = {
-  incidentId: PropTypes.string,
+  id: PropTypes.string.isRequired,
+  setIncident: PropTypes.func.isRequired,
+  incident: PropTypes.object,
 };
 
-export default Incident;
+Incident.defaultProps = {
+  incident: null,
+};
+
+const mapStateToProps = state => ({
+  incident: state.incident,
+});
+
+const mapDispatchToProps = dispatch => ({
+  setIncident: incident => dispatch(
+    IncidentActions.setIncident(incident),
+  ),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Incident);

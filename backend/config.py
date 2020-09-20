@@ -5,39 +5,69 @@
 import os
 
 class Config():
-  SQLALCHEMY_TRACK_MODIFICATIONS = True
-  DEBUG = False
-  TESTING = False
-  DB_SERVER = 'localhost'
-  DATABASE_URI = 'sqlite:///:memory'
-  TYPE = 'default'
-
-class DevelopmentConfig(Config):
-  SERVER_NAME = '127.0.0.1:8000'
+  ENV = 'development'
   DEBUG = True
   TESTING = True
+  # PROPAGATE_EXCEPTIONS
+  # PRESERVE_CONTEXT_ON_EXCEPTION
+  # TRAP_HTTP_EXCEPTIONS
+  # TRAP_BAD_REQUEST_ERRORS
+  SECRET_KEY = os.environ.get('APP_KEY')
+  # SESSION_COOKIE_NAME
+  # SESSION_COOKIE_DOMAIN
+  # SESSION_COOKIE_PATH
+  # SESSION_COOKIE_HTTPONLY
+  # SESSION_COOKIE_SECURE
+  # SESSION_COOKIE_SAMESITE
+  # PERMANENT_SESSION_LIFETIME
+  # SESSION_REFRESH_EACH_REQUEST
+  # USE_X_SENDFILE
+  # SEND_FILE_MAX_AGE_DEFAULT
+  # SERVER_NAME
+  # APPLICATION_ROOT
+  # PREFERRED_URL_SCHEME
+  # MAX_CONTENT_LENGTH
+  # JSON_AS_ASCII
+  # JSON_SORT_KEYS
+  # JSONIFY_PRETTYPRINT_REGULAR
+  # JSONIFY_MIMETYPE
+  # TEMPLATES_AUTO_RELOAD
+  # EXPLAIN_TEMPLATE_LOADING
+  # MAX_COOKIE_SIZE
 
-  ENV = 'development'
-  TYPE = 'development'
 
   DB_SERVER = 'localhost'
   DATABASE_URI = 'sqlite:///:memory'
 
+  #TYPE = 'default'
+
+class DevelopmentConfig(Config):
+  DB_SERVER = 'localhost'
+  DATABASE_URI = 'sqlite:///:memory'
   SQLALCHEMY_DATABASE_URI = 'sqlite:///crimewatch.db'
-  SECRET_KEY = os.environ.get('APP_KEY')
-  
+  SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 class StagingConfig(Config):
-  DEBUG = True
   TESTING = False
   DB_SERVER = 'localhost'
   DATABASE_URI = 'sqlite:///:memory'
-  TYPE = 'development'
+  #TYPE = 'development'
 
 class ProductionConfig(Config):
+  ENV = 'production'
   DEBUG = False
   TESTING = False
   DB_SERVER = 'localhost'
   DATABASE_URI = 'sqlite:///:memory'
-  TYPE = 'development'
-  
+  #TYPE = 'production'
+
+config = {
+  'development': DevelopmentConfig,
+  'staging': StagingConfig,
+  'production': ProductionConfig,
+}
+
+#FLASK_ENV [production | development | ]
+
+##### internal config values #####
+

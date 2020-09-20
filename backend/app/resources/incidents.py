@@ -5,9 +5,9 @@ from flask_restful import Resource
 from flask_jwt_extended import create_access_token, jwt_required
 
 class IncidentsResource(Resource):
-  @jwt_required
+  # @jwt_required
   def get(self):
-    time.sleep(3)# TODO: remove
+    # time.sleep(3)# TODO: remove
 
     # import random
     # import string

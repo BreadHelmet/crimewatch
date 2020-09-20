@@ -1,7 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 import hashlib, binascii, os
 
-db = SQLAlchemy();
+#db = SQLAlchemy();
+# from . import db
 
 def add_to_db(entry):
   try:
@@ -36,11 +37,11 @@ class Incident(db.Model):
   @classmethod
   def get_by_id(cls, id):
     return cls.query.filter_by(id=id).first()
-  
+
   @classmethod
   def get_all(cls):
-    return dict(list(map(lambda x: (x.id, cls.to_json(x)), cls.query.all())))
-  
+    return list(map(lambda x: cls.to_json(x), cls.query.all()))
+
   @staticmethod
   def to_json(incident):
     return {
@@ -66,7 +67,7 @@ class User(db.Model):
     pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), salt, 100000)
     pwdhash = binascii.hexlify(pwdhash)
     return (salt + pwdhash).decode('ascii')
-  
+
   @staticmethod
   def verify_password(provided_password, stored_password):
     salt = stored_password[:64]
