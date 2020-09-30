@@ -1,97 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import './style.css';
-import { logIn } from '../../api/user';
-import { Link } from 'react-router-dom';
-import EmailInput from '../../components/input/text/email';
-import PasswordInput from '../../components/input/text/password';
-import SubmitButton from '../../components/input/button/SubmitButton';
+import { UsersApi } from 'api/users';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoggedIn } from '../../redux/actions/login';
-
-// import PropTypes from 'prop-types';
-// import { withRouter } from 'react-router';
-
-// import { Redirect } from 'react-router-dom';
-
+import { Login as actions } from 'redux/actions/login/index';
+import { Button, Grid, TextField } from '@material-ui/core';
 
 export function Login({ history }) {
+
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
-  //const [shouldRedirect, setShouldRedirect] = useState(false);
-
-  const loggedIn = useSelector(state => state.loggedIn.loggedIn);
-
+  const loggedIn = useSelector(state => state.loggedIn);
   const dispatch = useDispatch();
-
-  console.log({ loggedIn });
-
 
   useEffect(() => {
     if (loggedIn && !loading) {
       history.push('/dashboard');
-      // return () => {
-      //   // cleanup
-      // };
     }
   }, [loggedIn, loading, history]);
-  
 
-  function onSubmit(e) {
+  function dispatchLogin(response) {
+    console.log({ response });
+    console.log('login returned, logging in')
+    dispatch(actions.login());
+  }
+
+  function login() {
     if (email && password) {
       setError(null);
       setLoading(true);
-      logIn(email, password).then(data => {
-        if (data && data.access_token) {
-          localStorage.setItem('access_token', data.access_token);
-          // console.log('setting loggedIn true');
-          dispatch(setLoggedIn(true));
-          setError(null);
-        } else {
-          // console.log('setting loggedIn false');
-          dispatch(setLoggedIn(false));
-        }
-      }).finally(() => setLoading(false));
+      UsersApi.login(email, password).then(dispatchLogin).catch(setError).finally(setLoading);
     } else {
       setError('To log in, please enter email and password');
     }
   }
-
-  // if (loggedIn) {
-  //   console.log('logged in true');
-  //   return <Redirect to='/incidents' />;
-  // } else {
-  //   console.log('logged in false');
-    return (
+  return (
     <div className="login">
-      <div className="error">{error}</div>
+      <div className="error">{error?.message}</div>
       <div className="user-form">
-        <h1>Login</h1>
-        <EmailInput
-          value={email}
-          onChange={setEmail}
-          readOnly={loading}
-        />
-        <PasswordInput
-          value={password}
-          onChange={setPassword}
-          readOnly={loading}
-        />
-        <SubmitButton
-          onClick={onSubmit}
-          loading={loading}
-        />
-        <Link to="/incidents">Incidents</Link>
+        <Grid
+          container
+          direction="column"
+          justify="flex-start"
+          alignItems="center"
+        >
+          <h2>Login</h2>
+          <TextField
+            label="Email"
+            variant="outlined"
+            value={email}
+            onChange={({ target: { value }}) => setEmail(value)}
+          />
+          <TextField
+            label="Password"
+            type="password"
+            variant="outlined"
+            value={password}
+            onChange={({ target: { value }}) => setPassword(value)}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={login}
+          >
+            Login
+          </Button>
+        </Grid>
       </div>
     </div>
-    )
-  // }
+  );
 }
-
-// Login.PropTypes = {
-//   history: 
-// };
-
-export default Login;

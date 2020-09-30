@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const PasswordInput = ({ value, onChange, readOnly }) => (
+export const PasswordInput = ({ value, onChange, readOnly, onEnter }) => (
   <label htmlFor="password">
     <span>Password</span>
     <input
@@ -10,6 +10,11 @@ export const PasswordInput = ({ value, onChange, readOnly }) => (
       type="password"
       name="password"
       id="password"
+      onKeyUp={e => {
+        if (e.key === 'Enter') {
+          onEnter();
+        }
+      }}
     />
   </label>
 );

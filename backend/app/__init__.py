@@ -1,46 +1,47 @@
-import os
 import sys
-import argparse
+import os
 import flask
-import flask_cors
-import flask_restful
-import flask_sqlalchemy
-from flask_jwt_extended import jwt_manager
+from flask_cors import CORS
+from flask_restful import Api
+from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended.jwt_manager import JWTManager
 
-# import resources
-from .resources import get_resources
-#from .resources import resource_definitions
+db = SQLAlchemy()
 
-db = flask_sqlalchemy.SQLAlchemy()
-
-def create_app(environment):
-
-  sys.path.append(
-    os.path.join(
-      os.path.dirname(__file__), '..'))
-  #import config
-  import config
-
-  print("__name__", __name__)
+def create_app(config):
 
   app = flask.Flask(__name__)
-  app.config.from_object(config[environment])
+  app.config.from_object(config)
 
-  # init
   db.init_app(app)
-  jwt_manager.JWTManager(app)
-  flask_cors.CORS(app)
-  api = flask_restful.Api(app)
+
+  JWTManager(app)
+  CORS(app)
+  api = Api(app)
   app.app_context().push()
+
+  from .resources.login import LoginResource
+  from .resources.register import RegisterResource
+  from .resources.incidents import IncidentsResource
+  from .resources.refresh import RefreshResource
+  from .resources.events import EventsResource
+  from .resources.actors import ActorsResource
+  from .resources.scenes import ScenesResource
+  from .resources.props import PropsResource
+  from .resources.auth import AuthorizationResource
+
   db.create_all()
 
-  res = get_resources()
-  for definition in res:
-    api.add_resource(
-      definition["resource"],
-      definition["url"])
+  api.add_resource(LoginResource, "/users/login")
+  api.add_resource(RegisterResource, "/users/register")
+  api.add_resource(IncidentsResource, "/incidents", "/incidents/<string:id>")
+  api.add_resource(RefreshResource, "/users/refresh")
 
-#FLASK_RUN_PORT
-#
-  # app.run(host='localhost', port=8000)
+  api.add_resource(EventsResource, "/events", "/events/<string:id>")
+  api.add_resource(ActorsResource, "/actors", "/actors/<string:id>")
+  api.add_resource(ScenesResource, "/scenes", "/scenes/<string:id>")
+  api.add_resource(PropsResource, "/props", "/props/<string:id>")
+
+  api.add_resource(AuthorizationResource, "/users/auth")
+
   return app

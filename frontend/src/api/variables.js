@@ -1,14 +1,9 @@
 
-const apiPath = 'http://localhost:8000/';
+export const apiPath = 'http://localhost:8000';
 
 export const AuthPath = {
-  LOGIN: `${apiPath}login`,
-  REGISTER: `${apiPath}register`,
-};
-
-export const HttpRequests = {
-  POST: 'POST',
-  GET: 'GET',
+  LOGIN: `${apiPath}/login`,
+  REGISTER: `${apiPath}/register`,
 };
 
 export function authState() {
@@ -16,3 +11,5 @@ export function authState() {
   localStorage.setItem('authState', authState);
   return authState;
 }
+
+export const JWT_SECONDS = 900000

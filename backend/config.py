@@ -3,6 +3,7 @@
 # https://flask.palletsprojects.com/en/1.1.x/config/
 
 import os
+import datetime
 
 class Config():
   ENV = 'development'
@@ -35,16 +36,22 @@ class Config():
   # EXPLAIN_TEMPLATE_LOADING
   # MAX_COOKIE_SIZE
 
-
-  DB_SERVER = 'localhost'
-  DATABASE_URI = 'sqlite:///:memory'
-
+  # DB_SERVER = 'localhost'
+  # DATABASE_URI = 'sqlite:///:memory'
   #TYPE = 'default'
+  JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=1)
 
 class DevelopmentConfig(Config):
-  DB_SERVER = 'localhost'
-  DATABASE_URI = 'sqlite:///:memory'
+
+  # Environment config
+  ENV = 'development'
+  DEBUG = True
+  TESTING = True
+  SECRET_KEY = os.environ.get('APP_KEY')
+
+  # Database
   SQLALCHEMY_DATABASE_URI = 'sqlite:///crimewatch.db'
+  SQLALCHEMY_ECHO = True
   SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 class StagingConfig(Config):
@@ -66,8 +73,3 @@ config = {
   'staging': StagingConfig,
   'production': ProductionConfig,
 }
-
-#FLASK_ENV [production | development | ]
-
-##### internal config values #####
-

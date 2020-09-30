@@ -1,22 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import { Provider } from 'react-redux';
-
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-
-import { createStore } from 'redux';
-import rootReducer from './redux/reducers/root';
-
-const initialState = {
-  loggedIn: {
-    loggedIn: false,
-  },
-  incidents: [],
-  incident: null,
-};
-const store = createStore(rootReducer, initialState);
+import store from './store';
 
 ReactDOM.render(
   <Provider store={store}>
