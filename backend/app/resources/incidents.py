@@ -4,7 +4,6 @@ from ..models import Incident, add_to_db
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, jwt_required
 
-from pprint import pprint
 
 class IncidentsResource(Resource):
   @jwt_required
@@ -41,7 +40,7 @@ class IncidentsResource(Resource):
     if not request.is_json:
       return ({"msg":"Missing JSON in request"}), 400
 
-    pprint(request.get_json())
+    # pprint(request.get_json())
 
     fields = request.get_json()
 
@@ -56,12 +55,6 @@ class IncidentsResource(Resource):
     if 'description' not in fields:
       return ({"msg":"Missing description argument"}), 400
     description = fields['description']
-
-    pprint({
-      'ident': ident,
-      'title': title,
-      'description': description
-    })
 
     incident = Incident.get_by_id(ident)
     incident.update(title, description)

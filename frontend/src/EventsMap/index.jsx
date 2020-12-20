@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
 import './style.css';
 import { pointInside, getBoundingBox } from './pointInside';
-import simplify from 'simplify-geojson';
+import { useSelector } from 'react-redux';
 
 // > ogr2ogr -f "file_format" destination_data source_data
 // > ogr2ogr -f GeoJSON -t_srs crs:84 output.geojson input.shp
@@ -23,16 +23,16 @@ export function addBoundingBox(geoj) {
   };
 }
 
-export function EventsMap({ geo }) {
+export function EventsMap({ width, height }) {
   const ref = useRef();
+  const geo = useSelector(state => state.geo);
   const [canvas, setCanvas] = useState(null);
   const [context, setContext] = useState(null);
   const [projection, setProjection] = useState(null);
   const [pathGenerator, setPathGenerator] = useState(null);
-  const [width,] = useState(1200);
-  const [height,] = useState(800);
   const [mouse, setMouse] = useState(null);
   const [gps, setGps] = useState(null);
+  const [region, setRegion] = useState(null);
 
   useEffect(() => {
     if(!context && ref) {
@@ -42,28 +42,24 @@ export function EventsMap({ geo }) {
   }, [context, ref]);
 
   useEffect(() => {
-    if (!projection && width && height && geo) {
-      setProjection(() => d3.geoMercator().fitSize([width, height], geo));
-      // const proj = d3.geoMercator().fitSize([width, height], geo);
-      // const scale = proj.scale();
-    }
-  }, [projection, width, height, geo]);
+    setProjection(() => d3.geoMercator().fitSize([width, height], region || geo ));
+  }, [width, height, geo, region]);
 
   useEffect(() => {
-    if (!pathGenerator && projection && context) {
+    if (projection && context) {
       setPathGenerator(() => d3.geoPath(projection, context));
+      context.clearRect(0, 0, width, height);
     }
-  }, [pathGenerator, projection, context, geo]);
+  }, [projection, context, geo, height, width]);
 
   useEffect(() => {
-    if (geo && context && pathGenerator) {
-      const { features } = geo;
-
+    if ((region || geo) && context && pathGenerator) {
+      const features = region ? [region] : geo.features;
       context.fillStyle = "#999";
       context.lineWidth = 0.3;
       context.strokeStyle = '#6d6d6d';
       for (const feature of features) {
-        if (gps && pointInside(feature, gps, 0.8)) {
+        if (gps && feature.box && pointInside(feature, gps, 0.8)) {
           context.fillStyle = "#c5c5c5";
         } else {
           context.fillStyle = "#999";
@@ -74,7 +70,7 @@ export function EventsMap({ geo }) {
         context.stroke();
       }
     }
-  }, [geo, context, pathGenerator, gps]);
+  }, [region, geo, context, pathGenerator, gps]);
 
   useEffect(() => {
     if (mouse && canvas && projection) {
@@ -83,10 +79,24 @@ export function EventsMap({ geo }) {
       const lonLat = projection.invert([clientX - rect.left, clientY - rect.top]);
       setGps(lonLat);
     }
-  }, [mouse]);
+  }, [mouse, canvas, projection]);
 
   function onMouseMove({ clientX, clientY }) {
     setMouse({ clientX, clientY });
+  }
+
+  function onMouseClick() {
+    if (region) {
+      setRegion(null);
+    } else {
+      const { features } = geo;
+      for (const feature of features) {
+        if(gps && pointInside(feature, gps, 1.0)) {
+          setRegion(feature);
+          break;
+        }
+      }
+    }
   }
 
   return (
@@ -99,10 +109,12 @@ export function EventsMap({ geo }) {
           alignItems="flex-start"
         >
           <canvas
+            style={{ cursor: 'pointer' }}
             ref={ref}
             width={width}
             height={height}
             onMouseMove={onMouseMove}
+            onClick={onMouseClick}
           />
         </Grid>
       </Card>

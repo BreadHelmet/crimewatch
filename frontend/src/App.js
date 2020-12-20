@@ -16,9 +16,6 @@ import { EventsProvider } from 'events/provider';
 import { Events } from 'events/search';
 import { Event } from 'events/view';
 
-import { addBoundingBox } from 'EventsMap/index';
-import { sweden } from 'geo/sweden';
-
 import { PropsProvider } from 'props/provider';
 import { Props } from 'props/search';
 import { Prop } from 'props/view';
@@ -30,6 +27,8 @@ import { Scene } from 'scenes/view';
 import { EventsMap } from 'EventsMap/index';
 
 import { Links } from 'util/links';
+
+import { GeoProvider } from 'EventsMap/GeoProvider';
 
 import 'index.css';
 
@@ -120,7 +119,11 @@ function App() {
 
               <Route
                 path={Links.MAP}
-                render={() => <EventsMap geo={addBoundingBox(sweden)} />}
+                render={({ match }) => (
+                  <GeoProvider id={match.params.id}>
+                    <EventsMap width={1200} height={800} />
+                  </GeoProvider>
+                )}
               />
 
             </EnsureLogin>
