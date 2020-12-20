@@ -1,14 +1,11 @@
-import { ActionTypes } from 'redux/actions/login';
+import { Login } from 'redux/actions/login';
 
-export function login(state = null, action = {}) {
-  
+export function login(state={}, action) {
   switch (action.type) {
-    case ActionTypes.SET_LOGGED_IN:
-      const { loggedIn } = action;
-      return {
-        ...state,
-        loggedIn,
-      };
+    case Login.Actions.LOGIN:
+      return true;
+    case Login.Actions.LOGOUT:
+      return false;
     default:
       return state;
   }

@@ -135,7 +135,7 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 
- 
+
 .DS_STORE
 node_modules
 scripts/flow/*/.flowconfig
@@ -171,3 +171,14 @@ packages/react-devtools-extensions/firefox/*.pem
 packages/react-devtools-extensions/shared/build
 packages/react-devtools-inline/dist
 packages/react-devtools-shell/dist
+
+# sqlite database
+*.db
+
+# zip files
+*.zip
+
+# geo data
+frontend/src/geo/*
+
+backend/app/test_data.sql
