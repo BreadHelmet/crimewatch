@@ -77,7 +77,7 @@ function pointInsideBox(point, box) {
   return true;
 }
 
-const clamp = (num, a=0, b=1) => Math.max(Math.min(num, Math.max(a, b)), Math.min(a, b));
+// const clamp = (num, a=0, b=1) => Math.max(Math.min(num, Math.max(a, b)), Math.min(a, b));
 const DEPTH = {
   'Polygon': 1,
   'MultiPolygon': 2,

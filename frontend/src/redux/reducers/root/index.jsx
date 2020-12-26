@@ -4,6 +4,7 @@ import { events, event } from 'events/reducers';
 import { scenes, scene } from 'scenes/reducers';
 import { actors, actor } from 'actors/reducers';
 import { props, prop } from 'props/reducers';
+import { geo } from 'EventsMap/GeoReducer';
 
 export default combineReducers({
   loggedIn: login,
@@ -15,4 +16,5 @@ export default combineReducers({
   actor,
   props,
   prop,
+  geo,
 });
